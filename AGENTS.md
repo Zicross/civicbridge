@@ -52,7 +52,12 @@ This repo uses repo-resident conventions. Do not rely on any single model's memo
 
 ## AI agent usage
 
-- Hermes/GPT-5.5: orchestrator, planner, final reviewer, memory/Obsidian curator.
-- Claude Code: implementation/refactor/codebase navigation when authenticated.
-- Codex: alternate implementation, review, CI/debugging when authenticated.
+See `planning/agent-dev-team-workflow.md` for the full orchestration model.
+
+- Hermes/GPT-5.5: orchestrator/chief-of-staff, product/architecture planner, final reviewer, git owner, memory/Obsidian curator.
+- Claude Code: implementation/refactor/codebase navigation lane when authenticated.
+- Codex: alternate implementation, independent critic/reviewer, CI/debugging lane when authenticated.
+- Hermes subagents: focused spec-compliance reviews, code-quality reviews, investigations, and documentation/test support.
 - Independent review should use a different model/agent than the implementer when possible.
+- Parallel workers write files only. They do not stage, commit, push, rebase, or merge; Hermes owns git operations.
+- Every meaningful build cycle should improve both ConstiuINT and the reusable agentic coding workflow.
