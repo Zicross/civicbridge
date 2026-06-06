@@ -57,6 +57,7 @@ See `planning/agent-dev-team-workflow.md` for the full orchestration model.
 - Hermes/GPT-5.5: orchestrator/chief-of-staff, product/architecture planner, final reviewer, git owner, memory/Obsidian curator.
 - Claude Code: implementation/refactor/codebase navigation lane when authenticated.
 - Codex: alternate implementation, independent critic/reviewer, CI/debugging lane when authenticated.
+- Hand-off documents should explicitly include a `plan_path` field linking to the associated plan file for quicker dispatch.
 - Hermes subagents: focused spec-compliance reviews, code-quality reviews, investigations, and documentation/test support.
 - Independent review should use a different model/agent than the implementer when possible.
 - Parallel workers write files only. They do not stage, commit, push, rebase, or merge; Hermes owns git operations.
