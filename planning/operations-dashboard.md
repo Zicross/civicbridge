@@ -71,7 +71,7 @@ Pause/escalate before:
 - [x] Cross-project reusable skill created: `agentic-project-operating-system`.
 - [x] Generic profile lanes created for all projects: `product`, `architect`, `builder`, `reviewer`, `curator`.
 - [x] Weekly cross-project Agentic Project OS review cron exists.
-- [ ] First autonomous build loop completes implementation Task 1.
+- [x] First autonomous build loop completes implementation Task 1.
 - [ ] First daily retro produces workflow improvements.
 - [ ] Dedicated Kanban board/profile dispatch is configured if needed.
 - [ ] Production deployment/secrets plan exists before any public launch.
