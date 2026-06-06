@@ -16,9 +16,11 @@ The working product name is **ConstiuINT** — constituent intelligence. The ear
 
 ConstiuINT is intended to become a production public product, not a throwaway demo. The MVP should therefore keep a narrow scope while treating civic identity, address-to-representative mapping, consent, message intake, auditability, abuse prevention, and privacy/data retention as Tier 1 trust-root areas.
 
+The product should be thought of as **constituent intelligence and structured civic feedback**, not merely a message-sending app. Messaging is one workflow; the larger platform opportunity is to help constituents understand representation, help representatives hear from their actual constituencies with better accuracy and timeliness, and reduce the incentives for noisy political text-spam by creating a higher-trust feedback channel.
+
 ## One-line idea
 
-A public platform where constituents can enter an address, discover supported elected representatives with clear provenance, and submit a managed message for ConstiuINT admin review and triage.
+A public platform where constituents can understand supported representation for an address, provide structured civic feedback with clear consent, and help create higher-quality constituency signals that can later support representative polling and engagement.
 
 ## MVP user story
 
@@ -29,15 +31,26 @@ As a constituent, I can enter my address, confirm control of an email address, r
 The initial public-product MVP should prove a narrow but honest loop:
 
 1. Public landing/intake flow under the ConstiuINT name.
-2. Email-confirmed constituent identity for message submission.
+2. Email-confirmed constituent identity for structured feedback submission.
 3. Address capture with normalization/geocoding through a provider abstraction.
 4. District/representative lookup for a deliberately limited support shape.
 5. Representative display grouped by level, with source, confidence, and as-of/last-verified metadata.
-6. Explicit consent before storing the message/address-derived data and placing the message in an admin-reviewed queue.
-7. Constituent message intake into an internal queue only.
-8. Admin queue with lifecycle states and no hidden external-routing side effects.
-9. Append-only audit event API for lifecycle changes, with payload minimization.
-10. Provider/lookup, message-state, consent, audit, and browser-flow verification gates.
+6. Issue/topic selection so feedback can become useful constituency intelligence instead of an undifferentiated inbox.
+7. Explicit consent before storing the message/address-derived data and placing the feedback in an admin-reviewed queue.
+8. Constituent feedback intake into an internal queue only.
+9. Admin queue with lifecycle states and no hidden external-routing side effects.
+10. Append-only audit event API for lifecycle changes, with payload minimization.
+11. Provider/lookup, message-state, consent, audit, and browser-flow verification gates.
+
+## Longer-term platform value props
+
+These are not all Plan 1 implementation requirements, but the MVP data model and language should not fight them:
+
+- Constituents get clearer intelligence about who represents them, at which level, and with what source/confidence.
+- Representatives and staff eventually get more accurate, timely feedback from people who are actually in their constituency.
+- Representatives may eventually poll verified/direct constituents by district or issue while avoiding broad, low-signal text blasts.
+- Constituents can express preferences through structured feedback/polls instead of being pushed into spammy SMS funnels.
+- The platform can create aggregated constituency signals while preserving individual privacy and consent boundaries.
 
 ## MVP support-shape default
 

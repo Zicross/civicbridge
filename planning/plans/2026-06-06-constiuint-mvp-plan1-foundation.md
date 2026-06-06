@@ -2,9 +2,9 @@
 
 > **For Hermes:** Use subagent-driven-development skill to implement this plan task-by-task. Use strict TDD for behavior changes. For parallel execution, workers write files only; Hermes/orchestrator owns git operations.
 
-**Goal:** Build the production-grade MVP foundation for ConstiuINT: email-confirmed public message intake, provider-backed representative lookup for the supported federal/state scope, an internal admin queue, and privacy-minimized audit lifecycle events.
+**Goal:** Build the production-grade MVP foundation for ConstiuINT: email-confirmed public structured feedback intake, provider-backed representative lookup for the supported federal/state scope, an internal admin queue, and privacy-minimized audit lifecycle events.
 
-**Architecture:** Use a Next.js TypeScript monolith for speed, with trust-root logic isolated in framework-independent `src/core/*` modules. Provider integrations sit behind adapter interfaces. Persistence/auth/server actions live under `src/server/*`; UI routes live under `src/app/*` and call server/domain services rather than provider SDKs directly.
+**Architecture:** Use a Next.js TypeScript monolith for speed, with trust-root logic isolated in framework-independent `src/core/*` modules. Provider integrations sit behind adapter interfaces. Persistence/auth/server actions live under `src/server/*`; UI routes live under `src/app/*` and call server/domain services rather than provider SDKs directly. Treat messaging as one workflow inside a broader constituent-intelligence platform: the data model should support issue/topic categorization and future aggregated constituency signals without implementing representative polling in Plan 1.
 
 **Tech Stack:** Next.js App Router, TypeScript strict mode, PostgreSQL, Drizzle ORM, Auth.js/email magic-link or equivalent session boundary, Vitest, Playwright, ESLint, import-boundary checks, provider fixtures plus Geocodio-first adapter.
 
@@ -26,7 +26,8 @@
 - National federal + state legislative support shape only.
 - Address normalization/geocoding + district/representative lookup through provider abstraction.
 - Email-confirmed constituent session before message submission.
-- Consent-gated message intake into internal admin queue.
+- Consent-gated structured feedback intake into internal admin queue.
+- Issue/topic categorization so feedback can later roll up into constituency intelligence.
 - Admin lifecycle state machine: `new`, `needs_review`, `approved_for_manual_handling`, `rejected`, `archived`.
 - Append-only audit event API with PII minimization.
 - Abuse controls sufficient for public intake baseline: rate-limit hook, email session requirement, bot-mitigation integration point.
@@ -38,6 +39,7 @@
 - Any copy that claims a message was sent to a representative.
 - Comprehensive local/county/city/school-board coverage nationally.
 - Representative accounts or representative-side messaging.
+- Representative-initiated polling, surveys, or outbound constituency campaigns.
 - Donation/conduit/payment behavior.
 - Voter-file/KYC/legal-residency verification.
 - Raw identity document handling.
@@ -402,6 +404,7 @@ Tests should assert:
 - message table stores message body once
 - address snapshot stores normalized components and provider/source metadata, not raw provider payload by default
 - consent version/timestamp is required for message submission
+- issueCategory is required so submissions can support structured feedback and future aggregated constituency intelligence
 
 **Step 2: Implement schema**
 
@@ -411,7 +414,7 @@ Minimum tables:
 - `sessions`/auth tables if required by auth library
 - `addressLookups`: id, userId, normalized address fields, geocode coordinates if needed, districts JSON or normalized child table, provider source, confidence, asOf, createdAt
 - `representativeSnapshots`: id, lookupId, person/office/district/source/contact metadata snapshot, confidence, asOf
-- `messages`: id, userId, addressLookupId, body, status, consentVersion, consentedAt, createdAt, updatedAt
+- `messages`: id, userId, addressLookupId, issueCategory, issueTags, body, status, consentVersion, consentedAt, createdAt, updatedAt
 - `auditEvents`: id, entityType, entityId, actorType, actorId, eventType, previousState, newState, reasonCode/reasonSummary, metadata JSON minimized, createdAt
 - optional `wrongRepresentativeFlags`: id, userId/messageId/lookupId, details, createdAt
 
@@ -471,6 +474,7 @@ Tests must verify:
 - unauthenticated user cannot submit message
 - email-unverified user cannot submit message
 - missing consent blocks submission
+- missing issue category blocks submission
 - consent version/timestamp is recorded
 - initial message status is `new`
 - audit event is created without raw message body/address/provider payload
@@ -487,7 +491,7 @@ Use Auth.js/email magic-link or a narrow internal abstraction if SMTP is not con
 1. verify authenticated/verified user
 2. enforce rate-limit/bot-mitigation hook
 3. require current consent version
-4. persist lookup snapshot/message
+4. persist lookup snapshot/message with issue category/tags
 5. create minimized audit event
 6. return message ID/status
 
@@ -568,7 +572,7 @@ git commit -m "feat: add lookup service and Geocodio adapter boundary"
 
 ## Task 7: Build public intake UI with conservative product copy
 
-**Objective:** Implement the user-facing flow: address lookup, representative display, consent, and message submission into admin queue.
+**Objective:** Implement the user-facing flow: address lookup, representative intelligence display, issue/topic selection, consent, and structured feedback submission into admin queue.
 
 **Files:**
 - Create/modify: `src/app/intake/page.tsx`, `src/app/intake/actions.ts`
@@ -585,8 +589,9 @@ Test must verify:
 3. user enters fixture address
 4. representative list renders grouped federal/state results with source/as-of/confidence
 5. unsupported local levels are shown honestly
-6. submission is blocked until consent checkbox is checked
-7. successful submission displays internal-review status, not delivery confirmation
+6. user must choose an issue/topic category before submission
+7. submission is blocked until consent checkbox is checked
+8. successful submission displays internal-review status, not delivery confirmation
 
 **Step 2: Implement components**
 

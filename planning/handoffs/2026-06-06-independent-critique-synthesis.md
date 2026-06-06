@@ -33,6 +33,7 @@ Both Claude Code and Codex returned `REVISE_SPEC_FIRST`. Neither called the proj
 - Data provider: Geocodio-first adapter behind interface, subject to ToS/pricing/political-use verification before production use; fixtures/stubs available for tests/local dev.
 - Audit: lifecycle event metadata only; no duplication of raw address, provider payload, or message body.
 - Stack: Next.js + TypeScript + Postgres + Drizzle + Vitest + Playwright.
+- Product concept refinement after user feedback: treat messaging as one workflow inside a broader constituent-intelligence/structured-feedback platform. Add issue/topic categorization in Plan 1 so future representative polling and aggregated constituency signals are not blocked, but do not implement representative-initiated polling yet.
 
 ## Resulting plan implication
 
