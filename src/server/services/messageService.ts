@@ -63,8 +63,7 @@ export function submitMessage(params: {
 
   // In real code we would persist `message` and `audit`.
   // Here we simply return the message (audit can be inspected via side-effect if needed).
-  // eslint-disable-next-line no-console
-  console.debug("Audit event payload created", audit);
+  void audit; // audit payload constructed but not yet persisted (placeholder)
 
   return message;
 }
