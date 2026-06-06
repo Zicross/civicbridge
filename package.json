@@ -13,7 +13,8 @@
     "test:contract": "vitest run tests/contract",
     "test:e2e": "playwright test",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "verify:tier1": "tsx scripts/verify-tier1.ts"
   },
   "dependencies": {
     "@auth/core": "^0.41.2",
