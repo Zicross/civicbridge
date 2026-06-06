@@ -1,9 +1,10 @@
 import type { RepresentativeProvider } from "../representativeProvider";
+import type { NormalizedAddress } from "../../core/address/types";
 import type { RepresentativeLookupResult, RepresentativeSnapshot, District, JurisdictionLevel, RepresentativeSource, LookupStatus, LookupConfidence } from "../../core/representatives/types";
 import { goldenAddresses } from "./goldenAddresses";
 
 export class FixtureProvider implements RepresentativeProvider {
-  async lookup(address: any): Promise<RepresentativeLookupResult> {
+  async lookup(address: NormalizedAddress): Promise<RepresentativeLookupResult> {
     // Simple deterministic response for any address; if address matches first golden, return supported, else no-match
     const isKnown = goldenAddresses.some((a) => a.normalizedLine1 === address.normalizedLine1 && a.postalCode === address.postalCode);
 
