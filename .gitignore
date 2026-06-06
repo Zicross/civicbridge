@@ -1,0 +1,21 @@
+# dependencies
+node_modules/
+.venv/
+__pycache__/
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# build artifacts
+.next/
+dist/
+build/
+coverage/
+.pytest_cache/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
