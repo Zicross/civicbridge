@@ -1,0 +1,12 @@
+import { Pool } from "pg";
+import { drizzle } from "drizzle-orm/node-postgres";
+import * as schema from "./schema";
+
+// Create a pg Pool using DATABASE_URL from environment (or fallback)
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+export const db = drizzle(pool, { schema });
+
+export type DB = typeof db;
