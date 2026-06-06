@@ -57,20 +57,19 @@ Completed:
 - [x] Task 5: Implement consent, auth boundary, and intake service
 - [x] Task 6: Implement lookup service and Geocodio adapter skeleton
 
-Remaining:
-- [ ] Task 7: Build public intake UI with conservative product copy
+- [x] Task 7: Build public intake UI with conservative product copy
 - [ ] Task 8: Build admin queue UI and lifecycle actions
 - [ ] Task 9: Add Tier 1 verifier and production-readiness docs
 
 ## Next recommended work
 
-Continue with Task 7: Build public intake UI with conservative product copy.
+Continue with Task 8: Build admin queue UI and lifecycle actions.
 
 This involves:
-- Creating/modifying intake page and server actions
-- Building AddressLookupForm, RepresentativeList, ConsentCheckbox, MessageForm components
-- E2E tests with Playwright
-- Ensuring conservative copy ("submit for review/triage" not "send to representative")
+- Creating admin page and server actions for lifecycle transitions
+- Implementing AdminQueueTable component
+- Adding state transition tests
+- Ensuring every transition creates audit events
 
 ## Agent availability
 
@@ -86,27 +85,43 @@ Pause/escalate before paid external services, production deployment, real consti
 
 ## What changed in this run
 
-- Added Geocodio mapper (`src/providers/geocodio/mapper.ts`)
-- Added GeocodioProvider adapter (`src/providers/geocodio/geocodioProvider.ts`)
-- Added LookupService (`src/server/services/lookupService.ts`)
-- Added env configuration (`src/server/env.ts`)
-- Added tests: geocodioMapper (7 tests), lookupService (5 tests)
-- Total 46 tests passing, build passes
+**June 6 (earlier run):**
+- Added Geocodio mapper, GeocodioProvider adapter, LookupService, env config
+- Tests: geocodioMapper (7), lookupService (5), total 46 tests
+
+**This run:**
+- Added server actions (`src/app/intake/actions.ts`)
+- Added public intake UI components (AddressLookupForm, RepresentativeList, MessageForm, ConsentCheckbox)
+- Updated intake page with full flow
+- Added E2E tests (skipped auth-dependent test)
+- Fixed lint errors
+- 46 unit tests passing, build passes
 
 ## Test evidence
 
 ```
-npm run test: 46 passed (11 test files)
-npm run build: ✓ Compiled successfully
-npm run lint: 0 errors (4 warnings in test files only)
+npx vitest run tests/unit tests/contract tests/integration: 46 passed
 npm run typecheck: passed
+npm run lint: 0 errors (5 warnings in test files only)
+npm run build: ✓ Compiled successfully
 ```
 
 ## Files modified this session
 
+**June 6 (earlier run):**
 - src/providers/geocodio/mapper.ts (new)
 - src/providers/geocodio/geocodioProvider.ts (new)
 - src/server/env.ts (new)
 - src/server/services/lookupService.ts (new)
 - tests/unit/providers/geocodioMapper.test.ts (new)
 - tests/integration/lookupService.test.ts (new)
+
+**This run:**
+- src/app/intake/actions.ts (new)
+- src/app/intake/page.tsx (modified)
+- src/components/AddressLookupForm.tsx (new)
+- src/components/RepresentativeList.tsx (new)
+- src/components/MessageForm.tsx (new)
+- src/components/ConsentCheckbox.tsx (modified)
+- vitest.config.ts (modified)
+- tests/e2e/intake.spec.ts (new)
