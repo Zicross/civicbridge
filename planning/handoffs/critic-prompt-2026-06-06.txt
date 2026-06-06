@@ -1,0 +1,17 @@
+You are an independent architecture/product/spec critic for CivicBridge. Do not modify files, do not run git operations, and do not scaffold code. Read AGENTS.md and planning/specs/2026-06-06-civicbridge-mvp.md in this repository.
+
+Task: critique the MVP spec before implementation planning. Focus on:
+1. Scope risks and missing decisions that materially affect the implementation plan.
+2. Trust-root/compliance/security/privacy risks for address mapping, representative identity/contact mapping, consent, message intake, and audit logs.
+3. Data/provider risks, especially representative lookup accuracy/staleness and national vs one-jurisdiction MVP scope.
+4. Recommended stack/architecture boundaries for a fast monolith that still isolates trust-root logic.
+5. Concrete plan-shaping recommendations: what to build first, what to defer, and what verification gates to require.
+
+Output format:
+- Executive verdict: PROCEED_TO_PLAN / REVISE_SPEC_FIRST / BLOCKED
+- Top 10 findings, each with severity Critical/High/Medium/Low and plan impact
+- Revised MVP scope recommendation
+- Open questions that must be answered before coding vs questions that can be defaulted in the plan
+- Verification gates to include in the implementation plan
+
+Be direct and skeptical. Assume CivicBridge touches civic identity and political communication, so over-trust is dangerous.

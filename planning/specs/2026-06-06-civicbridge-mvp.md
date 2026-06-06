@@ -2,80 +2,131 @@
 id: civicbridge-mvp-001
 type: design
 date: 2026-06-06
-status: draft
+status: revised-for-plan
 parents: []
 ---
 
-# CivicBridge MVP Spec Draft
+# ConstiuINT MVP Spec
+
+## Working name
+
+The working product name is **ConstiuINT** — constituent intelligence. The earlier repo/project codename remains CivicBridge until renamed, but product-facing copy and implementation planning should use ConstiuINT.
+
+## Product intent
+
+ConstiuINT is intended to become a production public product, not a throwaway demo. The MVP should therefore keep a narrow scope while treating civic identity, address-to-representative mapping, consent, message intake, auditability, abuse prevention, and privacy/data retention as Tier 1 trust-root areas.
 
 ## One-line idea
 
-A platform where constituents verify where they live, discover their elected representatives at each relevant level, and send managed communications through CivicBridge.
+A public platform where constituents can enter an address, discover supported elected representatives with clear provenance, and submit a managed message for ConstiuINT admin review and triage.
 
-## Initial user story
+## MVP user story
 
-As a constituent, I can enter my address, verify it enough for the product's trust requirements, see my representatives, and submit a message that CivicBridge can route/manage.
+As a constituent, I can enter my address, confirm control of an email address, review representatives that ConstiuINT can identify for my supported jurisdiction/levels, consent to storage/admin review, and submit a message into an internal admin queue.
 
-## MVP scope
+## Revised MVP scope after independent critique
 
-The MVP should prove the core constituent journey:
+The initial public-product MVP should prove a narrow but honest loop:
 
-1. Address capture.
-2. Address normalization/geocoding.
-3. District/representative lookup.
-4. Representative display grouped by level.
-5. Constituent message intake.
-6. Admin queue for reviewing/routing messages.
-7. Audit log for message lifecycle.
+1. Public landing/intake flow under the ConstiuINT name.
+2. Email-confirmed constituent identity for message submission.
+3. Address capture with normalization/geocoding through a provider abstraction.
+4. District/representative lookup for a deliberately limited support shape.
+5. Representative display grouped by level, with source, confidence, and as-of/last-verified metadata.
+6. Explicit consent before storing the message/address-derived data and placing the message in an admin-reviewed queue.
+7. Constituent message intake into an internal queue only.
+8. Admin queue with lifecycle states and no hidden external-routing side effects.
+9. Append-only audit event API for lifecycle changes, with payload minimization.
+10. Provider/lookup, message-state, consent, audit, and browser-flow verification gates.
+
+## MVP support-shape default
+
+Default for implementation planning unless the user overrides:
+
+- Geographic/level scope: **national federal + state legislative lookup only**, not comprehensive local-office coverage.
+- Local/county/city/school-board coverage is explicitly deferred until a named jurisdiction and verified data source are selected.
+- Representative display must make support limits visible; no UI copy may imply "all representatives at every level" for unsupported levels.
+
+Rationale: this avoids the national local-office data swamp while preserving a public national intake path. A later plan can add one named local jurisdiction with verified local data.
+
+## MVP trust and verification bar
+
+Default for implementation planning unless the user overrides:
+
+- Address verification means provider-backed address normalization/geocoding plus user self-attestation. It does **not** mean legal residency verification, voter-file matching, KYC, or identity-document review.
+- Message submission requires email confirmation/magic-link session and basic abuse controls.
+- ConstiuINT must not claim that a submitter is a legally verified resident.
+- ConstiuINT must not claim delivery to representatives in the MVP.
+
+## Message outcome and user-facing promise
+
+MVP messages are submitted to ConstiuINT for internal admin review and triage. The MVP does not automatically email, mail, API-send, or otherwise deliver messages to offices or representatives.
+
+Required wording principle: say "submit a message for ConstiuINT review/triage," not "send a message to your representative," until external delivery is separately specified and verified.
+
+## Data/provider approach
+
+Initial provider strategy for planning:
+
+- Primary likely provider: Geocodio for normalized/geocoded address plus congressional/state legislative districts/legislator data, subject to ToS, pricing, and political/civic use verification before production use.
+- Secondary/reference provider: OpenStates for state legislative metadata where useful.
+- Google Civic Information Representatives API should not be assumed as long-term foundation without fresh verification.
+- All provider calls must sit behind adapter interfaces. UI/routes must not call provider SDKs directly.
+- Provider results must include source, confidence, and as-of/lookup timestamp.
+- Provider payloads should not be stored raw unless a reviewed retention reason exists.
+
+## Representative lookup model
+
+A representative record in MVP should distinguish:
+
+- person identity
+- office/seat identity
+- jurisdiction/level
+- district identifier
+- term/source metadata when available
+- contact/channel metadata, if available
+- source provider and last verified/as-of timestamp
+- confidence and support-level status
+
+Contact data should be separated from person/office identity because it changes independently and may not be used for external delivery during MVP.
+
+## Privacy, retention, and audit defaults
+
+Default minimization policy for implementation planning:
+
+- Store only the constituent email, normalized address components required for support/debugging, derived district identifiers, representative snapshot metadata, message body, consent timestamp/version, message status, and audit event metadata.
+- Do not duplicate raw address, full message body, or raw provider payloads into audit logs.
+- Audit events reference message/user IDs and store event type, actor, timestamps, previous/new state, and minimal reason metadata.
+- Provider payload retention is off by default. If a raw payload snapshot is later needed for debugging or disputes, it requires a separate retention decision.
+- Secrets/API keys never live in repo docs.
+
+## Admin lifecycle states
+
+Initial state machine:
+
+- `new`
+- `needs_review`
+- `approved_for_manual_handling`
+- `rejected`
+- `archived`
+
+Every lifecycle transition must be validated by domain code and emit an audit event. External delivery remains out of scope.
 
 ## Explicit non-goals for MVP
 
-- No live in-app representative accounts yet.
-- No direct representative messaging yet.
-- No donation processing yet.
-- No campaign contribution conduit behavior yet.
+- No comprehensive local-office coverage nationally.
+- No live in-app representative accounts.
+- No automated/direct representative messaging or delivery claims.
+- No donation processing.
+- No campaign contribution conduit behavior.
 - No claim of legal compliance readiness.
+- No KYC/voter-file/legal-residency verification.
 - No storing raw identity documents.
+- No raw provider payload retention by default.
 
 ## Why donation processing is deferred
 
 Political donation processing/conduit behavior is legally and operationally sensitive. It likely introduces campaign finance reporting, donor eligibility, payment processor, refund, KYC/KYB, fraud, chargeback, and state/federal compliance questions. This belongs in a separate Tier 1 spec after the communication MVP proves demand.
-
-## Representative lookup data options
-
-Known options to investigate:
-
-- Geocodio: address geocoding plus congressional/state legislative district and legislator data.
-- OpenStates: legislative data and district/representative data, likely useful but may need separate geocoding/district matching.
-- DataMade My Reps / open civic datasets: useful reference/possible integration.
-- Official sources: House.gov, USAGov, FEC/public data where needed.
-
-Google Civic Information Representatives API appears to have a shutdown/turndown history and should not be assumed as the long-term dependency without verification.
-
-## Threat/compliance model draft
-
-Tier 1 trust-root areas:
-
-- Address verification and district mapping.
-- Representative identity/contact mapping.
-- Message audit log.
-- Consent and user communication preferences.
-- Any future donation/payment/conduit feature.
-
-Tier 2 areas:
-
-- Public marketing pages.
-- Basic UI polish.
-- Non-sensitive admin convenience UI.
-
-Important risks:
-
-- Wrong representative shown for address.
-- Message sent to wrong official.
-- Impersonation/fake constituent spam.
-- Sensitive constituent information retained unnecessarily.
-- Partisan/compliance exposure if donation/conduit features are bolted on prematurely.
-- Representative contact data staleness.
 
 ## Design alternatives
 
@@ -84,19 +135,19 @@ Important risks:
 A Next.js app with server actions/API routes, Postgres, and a small admin dashboard.
 
 Pros:
-- Fastest to MVP.
-- Easy deployment.
+- Fastest production-grade MVP loop.
 - One repo and one dev loop.
+- Easy to deploy as a single product surface.
 
 Cons:
-- Must be careful not to mix trust-root logic deeply into UI code.
+- Must enforce boundaries so trust-root logic does not leak into UI/routes.
 
 ### Alternative B: API/backend plus separate frontend
 
 Dedicated backend service with web frontend.
 
 Pros:
-- Cleaner service boundary.
+- Cleaner hard service boundary.
 - Easier future mobile/API integrations.
 
 Cons:
@@ -104,47 +155,84 @@ Cons:
 
 ### Alternative C: No-code/low-code prototype
 
-Use Airtable/Retool/forms plus scripts.
+Use forms/Retool/Airtable/scripts.
 
 Pros:
 - Fastest demo.
 
 Cons:
-- Weak trust model and harder to mature into reliable civic infrastructure.
+- Inappropriate default for a public production product touching civic identity and political communication.
 
-## Current recommendation
+## Chosen approach
 
-Use Alternative A for MVP, but isolate trust-root domain logic into explicit modules/packages with contract tests. This keeps the development loop fast while preserving a path to stronger architecture.
+Use Alternative A for MVP, but enforce a concrete trust-core boundary:
+
+- `src/core/address` — value types, normalization outputs, confidence rules, retention helpers.
+- `src/core/representatives` — representative/office/district models, support-level rules, lookup results.
+- `src/core/messages` — intake validation, consent requirements, lifecycle state machine.
+- `src/core/audit` — append-only event API and PII minimization policy.
+- `src/providers/*` — provider adapters behind interfaces only.
+- `src/server/*` — persistence, auth/session, rate limiting, API/server actions.
+- `src/app/*` — Next.js routes/UI that call server/domain services, not providers directly.
 
 ## Proposed initial stack
 
-Draft recommendation, not locked:
-
-- Next.js + TypeScript for app/UI/API.
+- Next.js App Router + TypeScript.
 - PostgreSQL for durable data.
-- Prisma or Drizzle for schema and migrations.
+- Drizzle ORM for explicit schema/migration control.
+- Vitest for unit/contract tests.
 - Playwright for browser verification.
-- Vitest/Jest for unit tests.
-- ESLint/TypeScript strict mode.
+- ESLint + TypeScript strict mode.
+- Auth.js or equivalent email magic-link/session boundary for constituents/admins.
+- Basic rate limiting and bot-mitigation hooks before public intake.
 
 ## Open questions
 
-1. Political scope: nonpartisan civic utility, partisan platform, or campaign infrastructure?
-2. Geographic scope for MVP: one state/county/city, or national from day one?
-3. Address verification strength: normalized address only, email/SMS confirmation, voter-file/KYC integration later?
-4. Representative data provider preference and budget.
-5. First communication channel: email routing, generated letters, internal admin-managed queue, or API/webhook integrations?
-6. Legal/compliance advisor availability before donation features.
-7. Brand/codename preference.
+### Must answer before production launch or external delivery
 
-## Self-critique pass 1
+1. Provider ToS/pricing/political-use confirmation for the selected production data providers.
+2. Hosting/deployment target and production secrets workflow.
+3. Legal/compliance review of user-facing copy, privacy policy, retention policy, and future delivery/donation features.
+4. Whether/when to add a named local jurisdiction and verified local-office data.
+5. Whether/when messages are externally delivered, by what channel, and under what consent/liability model.
 
-- The spec is intentionally conservative around donations because that is likely the highest-risk product area.
-- The biggest unresolved technical risk is accurate representative lookup across all levels, especially local offices.
-- The biggest unresolved product risk is whether representatives are users, recipients, or merely listed entities in the early phase.
-- The MVP should probably start with one jurisdiction or a provider that covers the needed levels, instead of promising every level nationally on day one.
-- Need independent critique before implementation plan.
+### Defaulted for Plan 1
 
-## Independent critique placeholder
+1. Political positioning: nonpartisan civic utility.
+2. Geographic/level scope: national federal + state legislative only.
+3. Address verification: normalized/geocoded address plus self-attestation, not legal residence verification.
+4. Submitter identity: email magic-link confirmation.
+5. Message channel: internal admin-managed queue only.
+6. ORM: Drizzle.
+7. Product-facing name: ConstiuINT.
 
-Pending Claude/Codex authentication.
+## Independent critique results
+
+Claude Code and Codex were run as independent critics before implementation planning.
+
+Persisted artifacts:
+
+- `planning/handoffs/claude-critique-2026-06-06.json`
+- `planning/handoffs/codex-critique-2026-06-06.md`
+- `planning/handoffs/2026-06-06-independent-critique-synthesis.md`
+
+Synthesis:
+
+- Both critics returned `REVISE_SPEC_FIRST`, not `BLOCKED`.
+- Both highlighted geographic/level scope, verification semantics, message outcome, consent, retention, audit-log minimization, representative-data provenance, and anti-abuse controls as plan-shaping decisions.
+- This revised spec defaults those decisions conservatively so Plan 1 can proceed without pretending the high-risk questions are solved.
+
+## Verification expectations
+
+Plan 1 must include:
+
+- Provider adapter contract tests and fixture-based golden lookup tests.
+- No ZIP-only district fallback.
+- Representative display includes source/as-of/confidence/support limits.
+- Consent required before message submission.
+- Message lifecycle state-machine unit tests.
+- Audit tests proving raw address/message body/provider payloads are not duplicated into audit events.
+- Rate-limit/session tests around message intake.
+- Playwright public intake and admin review smoke flows.
+- Import-boundary/static checks keeping `src/core/*` framework-independent.
+- Dedicated Tier 1 review before implementation is considered complete.
