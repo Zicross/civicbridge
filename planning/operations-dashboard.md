@@ -72,6 +72,7 @@ Pause/escalate before:
 - [x] Generic profile lanes created for all projects: `product`, `architect`, `builder`, `reviewer`, `curator`.
 - [x] Weekly cross-project Agentic Project OS review cron exists.
 - [x] First autonomous build loop completes implementation Task 1.
+- [x] Plan 1 Task 2 trust-core domain contracts and import-boundary tests complete.
 - [ ] First daily retro produces workflow improvements.
 - [ ] Dedicated Kanban board/profile dispatch is configured if needed.
 - [ ] Production deployment/secrets plan exists before any public launch.
