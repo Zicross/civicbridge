@@ -1,7 +1,7 @@
 {
   "name": "civicbridge",
   "version": "0.1.0",
-  "private": true,
+  "type": "module",
   "description": "ConstiuINT production-oriented constituency feedback infrastructure foundation.",
   "scripts": {
     "dev": "next dev",
