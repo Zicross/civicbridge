@@ -73,6 +73,7 @@ interface ActionButtonProps {
   className?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function ActionButton({ onClick, children, className = "" }: ActionButtonProps) {
   const [loading, setLoading] = useState(false);
 
@@ -98,6 +99,8 @@ function ActionButton({ onClick, children, className = "" }: ActionButtonProps) 
 
 export function AdminQueueTable() {
   const [messages, setMessages] = useState<QueuedMessage[]>(mockMessages);
+  // selectedId state reserved for future row selection feature
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const handleTransition = async (messageId: string, newStatus: MessageStatus) => {
