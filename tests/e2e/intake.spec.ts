@@ -18,17 +18,17 @@ test.describe("Public Intake Flow", () => {
   });
 
   test("address lookup returns representatives", async ({ page }) => {
-    // Enter address
-    await page.getByLabel(/address/i).fill(FIXTURE_ADDRESS);
-    await page.getByRole("button", { name: /look up/i }).click();
+    // Fill address and press Enter to submit - more reliable for React forms
+    await page.locator("#address-input").fill(FIXTURE_ADDRESS);
+    await page.locator("#address-input").press("Enter");
 
     // Should show representative list
     await expect(page.getByRole("heading", { name: /representatives/i })).toBeVisible();
   });
 
   test("representative list shows source/as-of/confidence", async ({ page }) => {
-    await page.getByLabel(/address/i).fill(FIXTURE_ADDRESS);
-    await page.getByRole("button", { name: /look up/i }).click();
+    await page.locator("#address-input").fill(FIXTURE_ADDRESS);
+    await page.locator("#address-input").press("Enter");
 
     // Should show at least one representative with metadata
     await expect(page.getByText(/source:/i)).toBeVisible();
@@ -36,16 +36,16 @@ test.describe("Public Intake Flow", () => {
   });
 
   test("unsupported local levels shown honestly", async ({ page }) => {
-    await page.getByLabel(/address/i).fill(FIXTURE_ADDRESS);
-    await page.getByRole("button", { name: /look up/i }).click();
+    await page.locator("#address-input").fill(FIXTURE_ADDRESS);
+    await page.locator("#address-input").press("Enter");
 
     // Should mention local levels are not supported
     await expect(page.getByText(/local|county|city/i)).toBeVisible();
   });
 
   test("user must choose issue/topic category before submission", async ({ page }) => {
-    await page.getByLabel(/address/i).fill(FIXTURE_ADDRESS);
-    await page.getByRole("button", { name: /look up/i }).click();
+    await page.locator("#address-input").fill(FIXTURE_ADDRESS);
+    await page.locator("#address-input").press("Enter");
 
     // Try to submit without issue category
     await page.getByLabel(/message/i, { exact: false }).fill("Test message");
@@ -56,8 +56,8 @@ test.describe("Public Intake Flow", () => {
   });
 
   test("submission blocked until consent checked", async ({ page }) => {
-    await page.getByLabel(/address/i).fill(FIXTURE_ADDRESS);
-    await page.getByRole("button", { name: /look up/i }).click();
+    await page.locator("#address-input").fill(FIXTURE_ADDRESS);
+    await page.locator("#address-input").press("Enter");
 
     // Fill in category and message
     await page.getByLabel(/topic|issue/i).selectOption("education");
