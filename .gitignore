@@ -24,3 +24,7 @@ tsconfig.tsbuildinfo
 # test artifacts
 test-results/
 playwright-report/
+
+# Test artifacts
+test-results/
+playwright-report/
