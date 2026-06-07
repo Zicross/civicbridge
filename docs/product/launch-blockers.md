@@ -147,7 +147,18 @@ These require explicit legal/compliance architecture review.
 
 ## Product Features
 
-### 🟢 External Delivery
+### 🟡 Mobile App / PWA
+
+**Status**: Deferred
+
+**Description**: ConstiuINT is primarily a mobile-first app:
+- PWA for installable mobile experience
+- Optional: React Native / Expo for native app
+- Mobile push notifications for status updates
+
+**Owner**: Product/Engineering
+
+**Blocking**: Post-MVP
 
 **Status**: Explicitly out of MVP scope
 
