@@ -50,15 +50,23 @@ This repo uses repo-resident conventions. Do not rely on any single model's memo
 - Donation/conduit functionality is out of MVP until legal/compliance architecture is explicitly specified.
 - Verification/address matching should be designed to minimize retained sensitive data.
 
-## AI agent usage
+## AI agent usage (June 2026 settled workflow)
 
-See `planning/agent-dev-team-workflow.md` for the full orchestration model.
+**Current workflow:**
+- **User (in Claude Opus on laptop)** → orchestrator → dispatches Gemma 4 for implementation
+- **Gemma 4 26b** → implementation (running on laptop 5070Ti via Ollama over Tailscale)
+- **Opus** → reviews Gemma's output
+- **Hermes (MiniMax M2.5)** → strategic direction, cross-project coordination, oversight, periodic check-ins
 
-- Hermes/GPT-5.5: orchestrator/chief-of-staff, product/architecture planner, final reviewer, git owner, memory/Obsidian curator.
-- Claude Code: implementation/refactor/codebase navigation lane when authenticated.
-- Codex: alternate implementation, independent critic/reviewer, CI/debugging lane when authenticated.
-- Hand-off documents should explicitly include a `plan_path` field linking to the associated plan file for quicker dispatch.
-- Hermes subagents: focused spec-compliance reviews, code-quality reviews, investigations, and documentation/test support.
-- Independent review should use a different model/agent than the implementer when possible.
-- Parallel workers write files only. They do not stage, commit, push, rebase, or merge; Hermes owns git operations.
-- Every meaningful build cycle should improve both ConstiuINT and the reusable agentic coding workflow.
+**NOT the old workflow:** Hermes no longer does day-to-day coding orchestration with Claude Code/Codex.
+
+**Codex:** available for code review if needed, but primary review is Opus → Gemma.
+
+**Git ownership:** User commits/pushes from their local environment. Hermes owns repo docs, specs, plans, and strategic oversight only.
+
+**Cross-project memory:**
+- Hermes maintains cross-project brief in Obsidian
+- Each project has rich AGENTS.md (this file)
+- Claude Code gets its own Obsidian memory base (hosted on GitHub repo)
+
+See `planning/agent-dev-team-workflow.md` for the full (outdated) orchestration model — needs update.
